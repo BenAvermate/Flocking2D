@@ -11,13 +11,13 @@ function setup() {
   let container = createDiv('Radii:')
   let labelA = createDiv("Aligmment:").style('display', 'flex').style('justify-content', 'space-between').style('width', '50%').parent(container);
   valA = createSpan(75).parent(labelA);
-  alignmentSlider = createSlider(0, 250, 50, 1).parent(labelA);     //75-100
+  alignmentSlider = createSlider(0, 250, 50, 1).parent(labelA);
   let labelC = createDiv("Cohesion:").style('display', 'flex').style('justify-content', 'space-between').style('width', '50%').parent(container);
   valC = createSpan(50).parent(labelC);
-  cohesionSlider = createSlider(0, 250, 50, 1).parent(labelC);      //50-75
+  cohesionSlider = createSlider(0, 250, 50, 1).parent(labelC);
   let labelS = createDiv("Separation:").style('display', 'flex').style('justify-content', 'space-between').style('width', '50%').parent(container);
   valS = createSpan(35).parent(labelS);
-  separationSlider = createSlider(0, 250, 33, 1).parent(labelS);    //35-50
+  separationSlider = createSlider(0, 250, 33, 1).parent(labelS);
 
   let containerMag = createDiv('Magnitude:')
   let labelAm = createDiv("Aligmment:").style('display', 'flex').style('justify-content', 'space-between').style('width', '50%').parent(containerMag);
