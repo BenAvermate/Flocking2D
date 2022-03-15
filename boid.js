@@ -16,9 +16,9 @@ class Boid {
             this.velocity = p5.Vector.random2D();
             this.acceleration = createVector();
             this.mass = (random(0.85, 1.5) + random(0.85, 1.5));
-            this.perceptionRadius = random(alignmentSlider.value(), alignmentSlider.value()+25);
-            this.neighbourRadius = random(cohesionSlider.value(), cohesionSlider.value()+25);
-            this.separationRadius = random(separationSlider.value(), separationSlider.value()+15);
+            this.perceptionRadius = random(alignmentSlider.value(), alignmentSlider.value() + 25);
+            this.neighbourRadius = random(cohesionSlider.value(), cohesionSlider.value() + 25);
+            this.separationRadius = random(separationSlider.value(), separationSlider.value() + 15);
             this.maxForce = 0.85;
             this.maxVelocity = 4;
             this.type = arguments[0]
@@ -57,20 +57,20 @@ class Boid {
         //TODO: use sliders
         //TODO: sight not behind
         let force = createVector();
-        let perceptionVicinity = boids.filter(boid => !this.equals(boid) && this.type.toString() === boid.type.toString() && this.position.dist(boid.position) <= this.perceptionRadius);
-        let neighbourVicinity = boids.filter(boid => !this.equals(boid) && this.type.toString() === boid.type.toString() && this.position.dist(boid.position) <= this.neighbourRadius);
-        let separationVicinity = boids.filter(boid => !this.equals(boid) && this.position.dist(boid.position) <= this.separationRadius);
+        let perceptionVicinity = boids.filter(boid => !this.equals(boid) && this.type.toString() === boid.type.toString() && this.position.dist(boid.position) <= alignmentSlider.value());
+        let neighbourVicinity = boids.filter(boid => !this.equals(boid) && this.type.toString() === boid.type.toString() && this.position.dist(boid.position) <= cohesionSlider.value());
+        let separationVicinity = boids.filter(boid => !this.equals(boid) && this.position.dist(boid.position) <= separationSlider.value());
         if (perceptionVicinity.length > 0) {
             //alignment
-            force.add(this.alignment(perceptionVicinity));
+            force.add(this.alignment(perceptionVicinity).mult(alignmentMagSlider.value()));
         }
         if (neighbourVicinity.length > 0) {
             //cohesion
-            force.add(this.cohesion(neighbourVicinity));
+            force.add(this.cohesion(neighbourVicinity).mult(cohesionMagSlider.value()));
         }
         if (separationVicinity.length > 0) {
             //sepparation
-            force.add(this.separation(separationVicinity));
+            force.add(this.separation(separationVicinity).mult(separationMagSlider.value()));
         }
         this.acceleration = force.div(this.mass);
     }
@@ -101,7 +101,7 @@ class Boid {
         for (const boid of vicinity) {
             let d = this.position.dist(boid.position);
             if (d === 0) {
-                d = 0.001;
+                d = 0.0001;
             }
             let diff = p5.Vector.sub(this.position, boid.position).div(d);
             steering.add(diff)
@@ -125,17 +125,21 @@ class Boid {
         //    this.position.y = height;
         //}
         //bounce off edges
-        if (this.position.x >= width) {
+        if (this.position.x > width) {
             this.velocity.setHeading(this.velocity.heading() + HALF_PI);
-        } else if (this.position.x <= 0) {
+            this.position.x = width;
+        } else if (this.position.x < 0) {
             this.velocity.setHeading(this.velocity.heading() + HALF_PI);
+            this.position.x = 0;
         }
-        if (this.position.y >= height) {
+        if (this.position.y > height) {
             this.velocity.setHeading(this.velocity.heading() + HALF_PI);
-        } else if (this.position.y <= 0) {
+            this.position.y = height;
+        } else if (this.position.y < 0) {
             this.velocity.setHeading(this.velocity.heading() + HALF_PI);
+            this.position.y = 0;
         }
-        //steer away from edge area
+        //TODO: steer away from edge area
     }
 
     update() {
@@ -149,6 +153,15 @@ class Boid {
     }
 
     show() {
+        if (circles.checked()) {
+            ellipseMode(RADIUS);
+            fill(255, 0);
+            strokeWeight(0.5);
+            ellipse(this.position.x, this.position.y, alignmentSlider.value(), alignmentSlider.value());
+            ellipse(this.position.x, this.position.y, cohesionSlider.value(), cohesionSlider.value());
+            ellipse(this.position.x, this.position.y, separationSlider.value(), separationSlider.value());
+        }
+
         //TODO: triangles
         stroke(this.type);
         strokeWeight(this.mass);
@@ -162,6 +175,6 @@ class Boid {
             y2
         );
         //point(this.position.x, this.position.y);
-        line(this.position.x, this.position.y,this.position.x+this.velocity.x,this.position.y+this.velocity.y);
+        line(this.position.x, this.position.y, this.position.x + this.velocity.x, this.position.y + this.velocity.y);
     }
 }
